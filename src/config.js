@@ -2,7 +2,7 @@ export default {
   headBar: {
     left: {
       icon: 'list',
-      url: 'http://x.moca-yinchuan.com/audio/'
+      url: 'http://x.moca-yinchuan.com/audio/#/exhibition/audios/46'
     },
     right: {
       icon: 'qrCode',

@@ -1,4 +1,4 @@
-import {div, a} from '@cycle/dom'
+import {div} from '@cycle/dom'
 import icons from '../icons'
 import xs from 'xstream'
 
@@ -7,8 +7,8 @@ function intent(domSource, props$) {
     domSource.events('touchstart').map(a => ({type: 'ACTIVE'})),
     xs.combine(
       domSource.events('touchend'),
-      props$.map(p => p.url)
-    ).filter(a => a[0]).map(a => ({type: 'CLICK', payload: a[1]}))
+      props$.map(p => p.url).remember()
+    ).debug().filter(a => a[0]).map(a => ({type: 'CLICK', payload: a[1]}))
   )
 }
 

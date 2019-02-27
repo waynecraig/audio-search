@@ -15,9 +15,11 @@ import Player from './components/Player'
 function main(sources) {
 
   const config$ = xs.of(config)
+  const playProxy$ = xs.create()
   const headBar = HeadBar({
     Props: config$.map(prop => prop.headBar),
-    DOM: sources.DOM
+    DOM: sources.DOM,
+    Play: playProxy$,
   })
   const canPlayProxy$ = xs.create()
   const keyboard = Keyboard({
@@ -29,6 +31,7 @@ function main(sources) {
     Input: keyboard.Input,
     HTTP: sources.HTTP,
   })
+  playProxy$.imitate(infoBar.Play)
   canPlayProxy$.imitate(infoBar.CanPlay)
   const player = Player({
     DOM: sources.DOM,

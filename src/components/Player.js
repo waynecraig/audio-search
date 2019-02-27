@@ -1,6 +1,7 @@
 import { div, h2, p, h } from "@cycle/dom";
 import xs from "xstream";
 import '../style/player.sass'
+import { getFieldData } from '../utils'
 
 const fileRoot = 'http://x.moca-yinchuan.com/audio/admin/sites/default/files/'
 
@@ -28,10 +29,6 @@ function model(action$) {
 
   return xs.merge(newTaskReducer$)
     .fold((state, reducer) => reducer(state), initState)
-}
-
-function getFieldData(obj, field, attr) {
-  return obj[field] && obj[field].und && obj[field].und[0] && obj[field].und[0][attr] || ''
 }
 
 function view(state$) {

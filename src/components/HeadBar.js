@@ -3,11 +3,25 @@ import IconBtn from './IconBtn'
 import xs from 'xstream'
 import '../style/head-bar.sass'
 import isolate from '@cycle/isolate'
+import { getFieldData } from '../utils'
 
 export default function (sources) {
 
+  const usePropsReducer$ = sources.Props.map(a => a.left)
+    .map(props => oldState => {
+      return props
+    })
+  
+  const exhChangeReducer$ = sources.Play.map(a => getFieldData(a, 'field_exhibition', 'target_id')).filter(a=>a)
+    .map(id => oldState => Object.assign({}, oldState, {
+      url: oldState.url.replace(/\d+$/, id)
+    }))
+
+  const listBtnProps$ = xs.merge(usePropsReducer$, exhChangeReducer$)
+    .fold((state, reducer) => reducer(state), {icon: '', url: ''})
+
   const leftBtn = isolate(IconBtn, 'left')({
-    Props: sources.Props.map(prop => prop.left),
+    Props: listBtnProps$,
     DOM: sources.DOM
   })
 
