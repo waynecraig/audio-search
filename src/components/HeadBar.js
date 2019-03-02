@@ -38,8 +38,19 @@ export default function (sources) {
   ))
 
   const JUMP = xs.merge(leftBtn.JUMP, rightBtn.JUMP)
-  const SCAN = xs.merge(leftBtn.SCAN, rightBtn.SCAN)
 
-  return { DOM, JUMP, SCAN }
+  const WX = xs.merge(leftBtn.WX, rightBtn.WX, sources.HTTP.select('wx').flatten().map(res => {
+    if (res.body.code === 0) {
+      return { type: 'config', payload: res.body.conf }
+    }
+  }).filter(d => d))
+
+  const HTTP = xs.of({
+    url: './get-wx-config?u=' + encodeURIComponent(location.href),
+    category: 'wx',
+    method: 'GET',
+  })
+
+  return { DOM, JUMP, WX, HTTP }
 
 }

@@ -42,6 +42,7 @@ module.exports = {
     title: '语音导览-银川当代美术馆',
     meta: {
       'viewport': 'initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width'
-    }
+    },
+    template: './src/template.html'
   })]
 };

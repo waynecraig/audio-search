@@ -6,7 +6,7 @@ import dropRepeats from 'xstream/extra/dropRepeats'
 const urlPrefix = 'http://x.moca-yinchuan.com/audio/admin/?q=service/node/'
 const urlPostfix = '.json'
 
-function intent(input$, http$) {
+function intent(input$, http$, direct$) {
   const cmds = {
     'c': 'CLEAR',
     'b': 'DELETE',
@@ -32,7 +32,8 @@ function intent(input$, http$) {
           payload: {nid: res.body.nid}
         }
       }
-    })
+    }),
+    direct$.map(d => ({type: 'DIRECT', payload: d}))
   )
 }
 
@@ -78,14 +79,24 @@ function model(action$) {
     .filter(a => a.type === 'GET_DATA')
     .map(action => function getDataReducer(oldState) {
       if (action.payload && action.payload.nid === oldState.no) {
-        return {no: oldState.no, tip: action.payload.title, res: action.payload}
+        if (oldState.auto) {
+          return {no: '', tip: '', res: 0, play: action.payload}
+        } else {
+          return {no: oldState.no, tip: action.payload.title, res: action.payload}
+        }
       } else {
         return {no: oldState.no, tip: oldState.tip, res: oldState.res}
       }
     })
 
-  return xs.merge(typeReducer$, clearReducer$, deleteReducer$, playReducer$, getDataReducer$)
-    .fold((state, reducer) => reducer(state), {no: '', tip: '', res: 0})
+  const directReducer$ = action$
+    .filter(a => a.type === 'DIRECT')
+    .map(action => oldState => {
+      return {no: action.payload, tip:'', res: 0, auto: 1}
+    })
+
+  return xs.merge(typeReducer$, clearReducer$, deleteReducer$, playReducer$, getDataReducer$, directReducer$)
+    .fold((state, reducer) => reducer(state), {no: '', tip: '', res: 0, auto: 0})
 }
 
 function view(state$) {
@@ -105,7 +116,7 @@ function view(state$) {
 }
 
 function InfoBar(sources) {
-  const action$ = intent(sources.Input, sources.HTTP)
+  const action$ = intent(sources.Input, sources.HTTP, sources.DIRECT).remember()
   const state$ = model(action$)
   const vtree$ = view(state$)
   const noChange$ = state$.map(s => s.no).filter(a=>a).compose(dropRepeats()).map(no => ({

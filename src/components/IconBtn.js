@@ -8,7 +8,7 @@ function intent(domSource, props$) {
     xs.combine(
       domSource.events('touchend'),
       props$.map(p => p.url).remember()
-    ).debug().filter(a => a[0]).map(a => ({type: 'CLICK', payload: a[1]}))
+    ).filter(a => a[0]).map(a => ({type: 'CLICK', payload: a[1]}))
   )
 }
 
@@ -49,7 +49,7 @@ export default function (sources) {
   const state$ = model(action$, sources.Props)
   const DOM = view(state$)
   const JUMP = action$.filter(a => a.type === 'CLICK' && a.payload).map(a => a.payload)
-  const SCAN = action$.filter(a => a.type === 'CLICK' && !a.payload).mapTo(1)
+  const WX = action$.filter(a => a.type === 'CLICK' && !a.payload).mapTo({type: 'scanQRCode'})
 
-  return { DOM, JUMP, SCAN }
+  return { DOM, JUMP, WX }
 }
