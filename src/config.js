@@ -1,4 +1,5 @@
 export default {
+  lang: 'en', // en or zh
   headBar: {
     left: {
       icon: 'list',
@@ -25,7 +26,16 @@ export default {
       { text: '8', id: '8', r: 1, c: 1 },
       { text: '9', id: '9', r: 1, c: 1 },
       { text: '0', id: '0', r: 1, c: 1 },
-      { text: '播放', id: 'p', r: 1, c: 4 },
+      { text: 'PLAY', id: 'p', r: 1, c: 4 },
     ]
+  },
+  zhText: {
+    'PLAY': '播放',
+    'MOCA Yinchuan': '银川当代美术馆',
+    'Audio Guide System': '语音导览系统',
+    'No Result': '未搜索到作品',
+    'Searching...': '搜索中...',
+    'Please Enter Audio Number': '请输入作品编号',
+    'Number Too Large!': '超过最大编号限制',
   }
 }

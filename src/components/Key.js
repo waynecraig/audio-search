@@ -1,6 +1,7 @@
 import { div, span } from "@cycle/dom";
 import xs from 'xstream'
 import icons from '../icons'
+import * as utils from '../utils'
 
 function intent(domSource, disable$) {
   return xs.merge(
@@ -10,7 +11,7 @@ function intent(domSource, disable$) {
   )
 }
 
-function model(props$, action$) {
+function model(props$, action$, changeLang$) {
   const usePropsReducer$ = props$
     .map(props => function usePropsReducer(oldState) {
       return props
@@ -34,25 +35,30 @@ function model(props$, action$) {
       return Object.assign({}, oldState, {disable: action.payload})
     })
 
-  return xs.merge(usePropsReducer$, activeReducer$, unActiveReducer$, disableReducer$)
-    .fold((state, reducer) => reducer(state), {text: '', r: 1, c: 1, active: 0, disable: 0, height: 0})
+  const changeLangReducer$ = changeLang$
+    .map(lang => function(oldState){
+      return Object.assign({}, oldState, {lang})
+    })
+
+  return xs.merge(usePropsReducer$, activeReducer$, unActiveReducer$, disableReducer$, changeLangReducer$)
+    .fold((state, reducer) => reducer(state), {text: '', r: 1, c: 1, active: 0, disable: 0, height: 0, lang: 'zh'})
 }
 
 function view(state$) {
-  return state$.map(({text, icon, r, c, active, disable, height}) => {
+  return state$.map(({text, icon, r, c, active, disable, height, lang}) => {
     const style = {
       'background-color': active && !disable ? '#ccc' : '#fff',
       height: `${height}px`
     }
     return div(`.key.noselect.r${r}.c${c}${disable ? '.disable' : ''}`, {style}, [
-      icon ? icons[icon]() : span([text])
+      icon ? icons[icon]() : span([utils.text(lang, text)])
     ])
   })
 }
 
 function Key(sources) {
   const action$ = intent(sources.DOM, sources.Disable)
-  const state$ = model(sources.Props, action$)
+  const state$ = model(sources.Props, action$, sources.LANG)
   const vtree$ = view(state$)
 
   return {

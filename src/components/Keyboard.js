@@ -44,12 +44,13 @@ function view(keys$) {
   }).flatten()
 }
 
-function makeKeyWrapper(DOM, CanPlay) {
+function makeKeyWrapper(DOM, CanPlay, LANG) {
   return function keyWrapper(props, id) {
     const key = isolate(Key, id)({
       DOM, 
       Props: xs.of(props), 
-      Disable: id === 'p' ? CanPlay.map(a => !a) : xs.never()
+      Disable: id === 'p' ? CanPlay.map(a => !a) : xs.never(),
+      LANG
     });
     return {
       DOM: key.DOM,
@@ -62,7 +63,7 @@ export default function(sources) {
 
   const proxyKeyClick$ = xs.create()
   const action$ = intent(proxyKeyClick$)
-  const keyWrapper = makeKeyWrapper(sources.DOM, sources.CanPlay)
+  const keyWrapper = makeKeyWrapper(sources.DOM, sources.CanPlay, sources.LANG)
   const keys$ = model(sources.Props, keyWrapper)
   const keyClick$ = keys$
     .map(keys => xs.merge(...keys.map(key => key.Click)))

@@ -3,8 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   //mode: 'development',
-  //mode: 'none',
-  mode: 'production',
+  mode: 'none',
+  //mode: 'production',
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -33,9 +33,16 @@ module.exports = {
         ]
       },
       {
-        test: /\.svg$/,
-        loader: 'svg-inline-loader'
-      }
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[path][name].[ext]',
+            },
+          },
+        ],
+      },
     ]
   },
   plugins: [new HtmlWebpackPlugin({
