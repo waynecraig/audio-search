@@ -29,7 +29,7 @@ function main(sources) {
     JUMP: sources.JUMP,
     WX: sources.WX,
     PROPS: config$,
-    LANG: lang.LANG,
+    LANG: lang.LANG.remember(),
     PARAMS: urlParams$,
   })
 

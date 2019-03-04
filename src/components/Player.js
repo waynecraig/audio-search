@@ -23,7 +23,7 @@ function model(action$, changeLang$) {
         id: a.nid, 
         title: end ? getFieldData(a, 'field_title' + end, 'value') : a.title, 
         audio: getFieldData(a, 'field_file' + end, 'uri').replace('public://', ''), 
-        image: getFieldData(a, 'field_cover' + end, 'uri').replace('public://', ''), 
+        image: getFieldData(a, 'field_cover', 'uri').replace('public://', ''), 
         author: getFieldData(a, 'field_author' + end, 'value'),
         lang: oldState.lang,
         data: a,
@@ -39,7 +39,7 @@ function model(action$, changeLang$) {
           const end = s.lang === 'en' ? '_en' : ''
           s.title = end ? getFieldData(a, 'field_title' + end, 'value') : a.title
           s.audio = getFieldData(a, 'field_file' + end, 'uri').replace('public://', '')
-          s.image = getFieldData(a, 'field_cover' + end, 'uri').replace('public://', '')
+          s.image = getFieldData(a, 'field_cover', 'uri').replace('public://', '')
           s.author = getFieldData(a, 'field_author' + end, 'value')
         }
         return s

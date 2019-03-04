@@ -1,19 +1,22 @@
 import xs from 'xstream'
-import {div, p, span, img} from '@cycle/dom'
+import {div, p, span, img, ol} from '@cycle/dom'
+import dropRepeats from 'xstream/extra/dropRepeats'
+import delay from 'xstream/extra/delay';
 import '../style/lang.sass'
 
-function intent(dom$, params$) {
+function intent(dom$) {
+  const changeLang$ = dom$.select('.langBtn').events('touchend').map(a => {
+    const lang = a.ownerTarget.getAttribute('data-value')
+    return {type: 'CHANGE_LANG', payload: lang}
+  })
   return xs.merge(
-    dom$.select('.langBtn').events('touchend').map(a => {
-      const lang = a.ownerTarget.getAttribute('data-value')
-      return {type: 'CHANGE_LANG', payload: lang}
-    }),
-    params$.map(a => a.lang).filter(a=>a).map(a=>({type: 'CHANGE_LANG', payload: a}))
+    changeLang$,
+    changeLang$.compose(delay(500)).mapTo({type: 'TURN', payload: 0})
   )
 }
 
 function model(action$, params$, storage$) {
-  const initState = {use: 1, hide: 0}
+  const initState = {use: 1, hide: 0, lang: 0}
 
   const envReducer$ = xs.combine(
     params$.map(a => a.lang).startWith(''), 
@@ -22,17 +25,24 @@ function model(action$, params$, storage$) {
   ).map(([paramLang, s, storeLang]) => oldState => {
     return {
       use: !(paramLang || (s && storeLang)),
-      hide: oldState.hide
+      hide: oldState.hide,
+      lang: paramLang || (s && storeLang) ? storeLang : ''
     }
   })
 
   const actionReducer$ = action$
-    .filter(a => a.type = 'CHANGE_LANG')
+    .filter(a => a.type === 'CHANGE_LANG')
     .map(a => oldState => {
-      return {use: oldState.use, hide: 1}
+      return {use: oldState.use, hide: 1, lang: a.payload}
     })
 
-  return xs.merge(envReducer$, actionReducer$)
+  const turnReducer$ = action$
+    .filter(a => a.type === 'TURN')
+    .map(a => oldState => {
+      return Object.assign({}, oldState, {use: a.payload})
+    })
+
+  return xs.merge(envReducer$, actionReducer$, turnReducer$)
     .fold((state, reducer) => reducer(state), initState)
 }
 
@@ -65,11 +75,11 @@ function view(state$) {
 
 export default function(sources) {
 
-  const action$ = intent(sources.DOM, sources.PARAMS)
+  const action$ = intent(sources.DOM)
   const state$ = model(action$, sources.PARAMS, sources.STORAGE)
   const vtree$ = view(state$)
 
-  const lang$ = action$.filter(a=>a.type==='CHANGE_LANG').map(a=>a.payload)
+  const lang$ = state$.map(a => a.lang).filter(a=>a).compose(dropRepeats())
 
   return {
     DOM: vtree$,

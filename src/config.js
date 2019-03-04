@@ -33,7 +33,7 @@ export default {
     'PLAY': '播放',
     'MOCA Yinchuan': '银川当代美术馆',
     'Audio Guide System': '语音导览系统',
-    'No Result': '未搜索到作品',
+    'No Result!': '未搜索到作品',
     'Searching...': '搜索中...',
     'Please Enter Audio Number': '请输入作品编号',
     'Number Too Large!': '超过最大编号限制',
