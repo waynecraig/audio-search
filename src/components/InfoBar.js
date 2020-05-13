@@ -81,7 +81,7 @@ function model(action$, changeLang$) {
   const getDataReducer$ = action$
     .filter(a => a.type === 'GET_DATA')
     .map(action => function getDataReducer(oldState) {
-      if (action.payload && action.payload.nid === oldState.no) {
+      if (action.payload && +action.payload.nid === +oldState.no) {
         if (oldState.auto) {
           return {no: '', tip: '', res: 0, play: action.payload, auto: 0, lang: oldState.lang}
         } else {
