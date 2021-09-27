@@ -4,7 +4,7 @@ import '../style/info-bar.sass'
 import dropRepeats from 'xstream/extra/dropRepeats'
 import { getFieldData, text } from '../utils'
 
-const urlPrefix = 'http://moca-yinchuan.art/audio/admin/?q=service/node/'
+const urlPrefix = 'https://moca-yinchuan.art/audio/admin/?q=service/node/'
 const urlPostfix = '.json'
 
 function intent(input$, http$, direct$) {

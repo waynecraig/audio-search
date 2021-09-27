@@ -3,7 +3,7 @@ import xs from "xstream";
 import '../style/player.sass'
 import { getFieldData, text } from '../utils'
 
-const fileRoot = 'http://moca-yinchuan.art/audio/admin/sites/default/files/'
+const fileRoot = 'https://moca-yinchuan.art/audio/admin/sites/default/files/'
 
 function intent(domSource, play$) {
   return xs.merge(
