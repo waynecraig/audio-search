@@ -50,6 +50,7 @@ export default function (sources) {
     DOM: sources.DOM,
     Play: infoBar.Play,
     LANG: sources.LANG,
+    AUDIO: sources.AUDIO,
   });
 
   const vdom$ = xs
@@ -63,5 +64,6 @@ export default function (sources) {
     HTTP: http$,
     JUMP: headBar.JUMP,
     WX: headBar.WX,
+    AUDIO: player.AUDIO,
   };
 }

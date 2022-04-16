@@ -1,14 +1,15 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   //mode: 'development',
   //mode: 'none',
-  mode: 'production',
-  entry: './src/index.js',
+  mode: "production",
+  entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: '[name].[hash].bundle.js'
+    path: path.resolve(__dirname, "dist"),
+    // filename: "[name].[hash].bundle.js",
+    filename: "[name].bundle.js",
   },
   module: {
     rules: [
@@ -16,40 +17,50 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            presets: ['@babel/preset-env']
-          }
-        }
+            presets: ["@babel/preset-env"],
+          },
+        },
       },
       {
-        test: /\.sass$/,
+        test: /\.s[ac]ss$/,
         use: [
-          { loader: 'style-loader' },
+          { loader: "style-loader" },
           {
-            loader: 'css-loader',
+            loader: "css-loader",
           },
-          { loader: 'sass-loader' }
-        ]
+          { loader: "sass-loader" },
+        ],
       },
       {
         test: /\.(png|jpg|gif)$/,
         use: [
           {
-            loader: 'file-loader',
+            loader: "file-loader",
             options: {
-              name: '[path][name].[ext]',
+              name: "[path][name].[ext]",
             },
           },
         ],
       },
-    ]
+    ],
   },
-  plugins: [new HtmlWebpackPlugin({
-    title: '语音导览-银川当代美术馆',
-    meta: {
-      'viewport': 'initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width'
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: "语音导览-银川当代美术馆",
+      meta: {
+        viewport:
+          "initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width",
+      },
+      template: "./src/template.html",
+    }),
+  ],
+  devServer: {
+    static: {
+      directory: __dirname,
     },
-    template: './src/template.html'
-  })]
+    compress: false,
+    port: 9000,
+  },
 };

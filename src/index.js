@@ -11,6 +11,7 @@ import {getUrlParams} from './utils'
 import config from './config'
 import Lang from './components/Lang'
 import App from './components/App'
+import { makeAudioDriver } from './drivers/audio'
 
 function main(sources) {
 
@@ -28,6 +29,7 @@ function main(sources) {
     HTTP: sources.HTTP,
     JUMP: sources.JUMP,
     WX: sources.WX,
+    AUDIO: sources.AUDIO,
     PROPS: config$,
     LANG: lang.LANG.remember(),
     PARAMS: urlParams$,
@@ -40,6 +42,7 @@ function main(sources) {
     HTTP: app.HTTP, 
     JUMP: app.JUMP, 
     WX: app.WX,
+    AUDIO: app.AUDIO,
     STORAGE: lang.STORAGE,
   }
 }
@@ -50,4 +53,5 @@ run(main, {
   JUMP: makeJumpDriver(),
   WX: makeWxDriver(),
   STORAGE: storageDriver,
+  AUDIO: makeAudioDriver(),
 })
